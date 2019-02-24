@@ -17,17 +17,30 @@ public class TicketMachine
     private int balance;
     // The total amount of money collected by this machine.
     private int total;
+    private int count;
+    private double mean;
 
     /**
      * Create a machine that issues tickets of the given price.
      */
-    public TicketMachine(int ticketCost)
+    public TicketMachine(int ticketType)
     {
-        price = ticketCost;
+        price = ticketType(ticketType);
         balance = 0;
         total = 0;
     }
 
+    public int ticketType(int type)
+    {
+        switch(type) {
+            case 1: price = 100;
+            break;
+            case 2: price = 200;
+            break;
+            
+        }
+        return price;
+    }
     /**
      * @Return The price of a ticket.
      */
@@ -45,13 +58,17 @@ public class TicketMachine
         return balance;
     }
 
+    public double getMean()
+    {
+        return mean;
+    }
     /**
      * Receive an amount of money in cents from a customer.
      * Check that the amount is sensible.
      */
     public void insertMoney(int amount)
     {
-        if(amount > 0) {
+        if(amount >= 0) {
             balance = balance + amount;
         }
         else {
@@ -67,7 +84,14 @@ public class TicketMachine
      */
     public void printTicket()
     {
-        if(balance >= price) {
+        int amountLeftToPay = price - balance;
+        
+        if(amountLeftToPay > 0) {
+            System.out.println("You must insert at least: " +
+                               (amountLeftToPay) + " more cents.");
+            
+        }
+        else {
             // Simulate the printing of a ticket.
             System.out.println("##################");
             System.out.println("# The BlueJ Line");
@@ -80,14 +104,19 @@ public class TicketMachine
             total = total + price;
             // Reduce the balance by the prince.
             balance = balance - price;
-        }
-        else {
-            System.out.println("You must insert at least: " +
-                               (price - balance) + " more cents.");
+            count += 1;
+            mean = total/count;
                     
         }
     }
 
+    public int empty()
+    {
+        int sum = total;
+        total = 0;
+        return sum;
+    }
+    
     /**
      * Return the money in the balance.
      * The balance is cleared.
